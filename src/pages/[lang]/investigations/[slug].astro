@@ -25,7 +25,7 @@ const { Content } = await render(item);
 const related = (await storiesFor(lang)).filter((s) => s.data.desk === 'investigations').slice(0, 4);
 ---
 
-<BaseLayout lang={lang} title={item.data.title} description={item.data.centralQuestion}>
+<BaseLayout lang={lang} title={item.data.title} description={item.data.centralQuestion} ogType="article">
   <div class="wrap story-shell">
     <article data-pagefind-body>
       <header class="story-header">

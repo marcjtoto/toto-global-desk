@@ -25,7 +25,7 @@ const related = (await storiesFor(lang))
   .slice(0, 5);
 ---
 
-<BaseLayout lang={lang} title={story.data.title} description={story.data.dek}>
+<BaseLayout lang={lang} title={story.data.title} description={story.data.dek} ogType="article">
   <div class="wrap story-shell">
     <article data-pagefind-body>
       <header class="story-header">

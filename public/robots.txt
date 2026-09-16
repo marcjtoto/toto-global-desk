@@ -1,0 +1,3 @@
+# DEMO newsroom — do not index until DEMO labels come off.
+User-agent: *
+Disallow: /
