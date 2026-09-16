@@ -4,7 +4,7 @@ Independent international news, intelligence and investigations.
 
 Public DEMO: https://marcjtoto.github.io/toto-global-desk/en/
 
-All current stories are labeled **DEMO**. Do not treat them as live reporting. Source: https://github.com/marcjtoto/toto-global-desk
+See [CONTENT_OPERATIONS.md](CONTENT_OPERATIONS.md) for how stories enter the site. Drafts in `editorial/` are not published until Marc approves.
 
 ## Requirements
 

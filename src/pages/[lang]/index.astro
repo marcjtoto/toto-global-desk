@@ -3,7 +3,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import BreakingBar from '../../components/BreakingBar.astro';
 import { t } from '../../i18n/ui';
 import { langFromParam, localize, staticLangPaths, withBase } from '../../lib/lang';
-import { casesFor, storiesFor, storySlug, caseSlug } from '../../lib/content';
+import { artForDesk, casesFor, homepageSlots, storiesFor, storySlug, caseSlug } from '../../lib/content';
 
 export function getStaticPaths() {
   return staticLangPaths();
@@ -13,18 +13,10 @@ const lang = langFromParam(Astro.params.lang);
 const copy = t(lang);
 const stories = await storiesFor(lang);
 const cases = await casesFor(lang);
-const lead = stories.find((s) => s.data.featured) ?? stories[0];
-const breaking = stories.find((s) => s.data.breaking);
-const world = stories.find((s) => s.data.translationKey === 'satellite-limits');
-const corruption = stories.find((s) => s.data.translationKey === 'not-corruption-yet');
-const live = [
-  breaking,
-  stories.find((s) => s.data.translationKey === 'open-demo-case'),
-  stories.find((s) => s.data.translationKey === 'brazil-public-records'),
-  stories.find((s) => s.data.translationKey === 'reading-foia'),
-].filter(Boolean);
-const mostRead = [lead, world, corruption].filter(Boolean);
+const { lead, breaking, mid, live, mostRead } = homepageSlots(stories);
 const caseFile = cases[0];
+const midA = mid[0];
+const midB = mid[1];
 ---
 
 <BaseLayout lang={lang} title={copy.tagline} description={copy.tagline}>
@@ -70,36 +62,47 @@ const caseFile = cases[0];
 
       <div class="mid-stack">
         {
-          world ? (
+          midA ? (
             <article class="mid-card">
-              <a href={localize(lang, `/article/${storySlug(world)}`)}>
-                <img class="mid-photo" src={withBase('/art/glass.svg')} alt={copy.originalArt} width="800" height="480" />
+              <a href={localize(lang, `/article/${storySlug(midA)}`)}>
+                <img
+                  class="mid-photo"
+                  src={withBase(artForDesk(midA.data.desk))}
+                  alt={copy.originalArt}
+                  width="800"
+                  height="480"
+                />
               </a>
-              <span class="chip">{copy.world}</span>
+              <span class="chip">{copy[midA.data.desk]}</span>
               <h2>
-                <a href={localize(lang, `/article/${storySlug(world)}`)}>{world.data.title}</a>
+                <a href={localize(lang, `/article/${storySlug(midA)}`)}>{midA.data.title}</a>
               </h2>
-              <p class="dek">{world.data.dek}</p>
+              <p class="dek">{midA.data.dek}</p>
               <p class="byline">
-                {copy.authors} {world.data.authors.join(', ')} · {world.data.published.toISOString().slice(0, 10)}
+                {copy.authors} {midA.data.authors.join(', ')} · {midA.data.published.toISOString().slice(0, 10)}
               </p>
             </article>
           ) : null
         }
         {
-          corruption ? (
+          midB ? (
             <article class="mid-card">
-              <a href={localize(lang, `/article/${storySlug(corruption)}`)}>
-                <img class="mid-photo" src={withBase('/art/solar.svg')} alt={copy.originalArt} width="800" height="420" />
+              <a href={localize(lang, `/article/${storySlug(midB)}`)}>
+                <img
+                  class="mid-photo"
+                  src={withBase(artForDesk(midB.data.desk))}
+                  alt={copy.originalArt}
+                  width="800"
+                  height="420"
+                />
               </a>
-              <span class="chip">{copy.environment}</span>
+              <span class="chip">{copy[midB.data.desk]}</span>
               <h2>
-                <a href={localize(lang, `/article/${storySlug(corruption)}`)}>{corruption.data.title}</a>
+                <a href={localize(lang, `/article/${storySlug(midB)}`)}>{midB.data.title}</a>
               </h2>
-              <p class="dek">{corruption.data.dek}</p>
+              <p class="dek">{midB.data.dek}</p>
               <p class="byline">
-                {copy.authors} {corruption.data.authors.join(', ')} ·{' '}
-                {corruption.data.published.toISOString().slice(0, 10)}
+                {copy.authors} {midB.data.authors.join(', ')} · {midB.data.published.toISOString().slice(0, 10)}
               </p>
             </article>
           ) : null
@@ -111,19 +114,17 @@ const caseFile = cases[0];
           <h2>{copy.liveUpdates}</h2>
           <ol>
             {
-              live.map((story, i) =>
-                story ? (
-                  <li>
-                    <time datetime={story.data.published.toISOString()}>
-                      {story.data.published.toISOString().slice(5, 10)}
-                    </time>
-                    <div>
-                      <a href={localize(lang, `/article/${storySlug(story)}`)}>{story.data.title}</a>
-                      {story.data.breaking ? <div class="now">{copy.now}</div> : null}
-                    </div>
-                  </li>
-                ) : null,
-              )
+              live.map((story) => (
+                <li>
+                  <time datetime={story.data.published.toISOString()}>
+                    {story.data.published.toISOString().slice(5, 10)}
+                  </time>
+                  <div>
+                    <a href={localize(lang, `/article/${storySlug(story)}`)}>{story.data.title}</a>
+                    {story.data.breaking ? <div class="now">{copy.now}</div> : null}
+                  </div>
+                </li>
+              ))
             }
           </ol>
           <p style="padding:0 0.8rem 0.8rem">

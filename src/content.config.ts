@@ -54,6 +54,38 @@ const stories = defineCollection({
     translationKey: z.string(),
     claims: z.array(claimSchema).default([]),
     sources: z.array(sourceSchema).default([]),
+    sample: z.boolean().default(true),
+    beat: z
+      .enum([
+        'stf-crisis',
+        'corruption',
+        'immigration',
+        'trump-white-house',
+        'war-security',
+        'general',
+      ])
+      .optional(),
+    editionStatus: z
+      .enum(['breaking', 'developing', 'verified-update', 'monitoring'])
+      .optional(),
+    editionSlot: z.enum(['morning', 'midday', 'evening', 'breaking']).optional(),
+    whatHappened: z.string().optional(),
+    whyItMatters: z.string().optional(),
+    whatChanged: z.string().optional(),
+    whatToWatch: z.string().optional(),
+    rightOfReply: z.enum(['none', 'pending', 'received', 'not-applicable']).optional(),
+    correctionLog: z
+      .array(z.object({ date: z.string(), text: z.string() }))
+      .default([]),
+    mediaNeeds: z
+      .array(
+        z.object({
+          kind: z.enum(['image', 'video', 'map']),
+          need: z.string(),
+          rights: z.string(),
+        }),
+      )
+      .default([]),
   }),
 });
 

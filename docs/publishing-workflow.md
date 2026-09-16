@@ -1,6 +1,8 @@
 # Publishing workflow
 
-1. Write or translate MDX under `src/content/stories/` or `src/content/cases/`.
+See **[CONTENT_OPERATIONS.md](../CONTENT_OPERATIONS.md)** for the live content engine (MDX paths, homepage slot rules, approval gate, Chicago edition clock).
+
+1. Draft in `editorial/drafts/` — not on the site.
 2. Fill schema fields: desk, dates, claims, sources. For cases, evidence + timeline + subjectResponse.
 3. Keep `status: demo` until the piece is real reporting.
 4. Run `npm run dev` and read the article and the opposite language.
