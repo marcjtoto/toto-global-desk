@@ -2,7 +2,9 @@
 
 Independent international news, intelligence and investigations.
 
-This is a **local** Astro newsroom. All current stories are labeled **DEMO**. Do not treat them as live reporting.
+Public DEMO: https://marcjtoto.github.io/toto-global-desk/en/
+
+All current stories are labeled **DEMO**. Do not treat them as live reporting. Source: https://github.com/marcjtoto/toto-global-desk
 
 ## Requirements
 

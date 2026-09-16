@@ -83,7 +83,7 @@ export const ui = {
     supports: 'What it supports',
     doesNotProve: 'What it does not prove',
     footer:
-      'ToTo Global Desk is an independent newsroom project. Local build only. No public deploy until the owner approves.',
+      'ToTo Global Desk is an independent newsroom project. Public DEMO site — not live reporting until DEMO labels come off.',
     skip: 'Skip to content',
     mastheadDate: 'Independent desk',
   },
@@ -151,7 +151,7 @@ export const ui = {
     supports: 'O que sustenta',
     doesNotProve: 'O que não prova',
     footer:
-      'ToTo Global Desk é um projeto de redação independente. Apenas build local. Sem publicação pública até o dono autorizar.',
+      'ToTo Global Desk é um projeto de redação independente. Site DEMO público — não é reportagem ao vivo até sair o rótulo DEMO.',
     skip: 'Ir para o conteúdo',
     mastheadDate: 'Bancada independente',
   },
