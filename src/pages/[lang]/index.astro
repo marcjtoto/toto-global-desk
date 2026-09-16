@@ -1,0 +1,108 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import BreakingBar from '../../components/BreakingBar.astro';
+import StoryCard from '../../components/StoryCard.astro';
+import { t } from '../../i18n/ui';
+import { langFromParam, localize, staticLangPaths } from '../../lib/lang';
+import { casesFor, storiesFor, storySlug, caseSlug } from '../../lib/content';
+
+export function getStaticPaths() {
+  return staticLangPaths();
+}
+
+const lang = langFromParam(Astro.params.lang);
+const copy = t(lang);
+const stories = await storiesFor(lang);
+const cases = await casesFor(lang);
+const lead = stories.find((s) => s.data.featured) ?? stories[0];
+const breaking = stories.find((s) => s.data.breaking);
+const latest = stories.filter((s) => s.id !== lead?.id).slice(0, 6);
+const investigations = stories.filter((s) => s.data.desk === 'investigations');
+const deskIds = ['brazil', 'usa', 'world', 'corruption-watch', 'war-watch', 'data-lab', 'opinion'] as const;
+---
+
+<BaseLayout lang={lang} title={copy.tagline} description={copy.tagline}>
+  {
+    breaking ? (
+      <BreakingBar
+        lang={lang}
+        title={breaking.data.title}
+        href={localize(lang, `/article/${storySlug(breaking)}`)}
+      />
+    ) : null
+  }
+  <div class="wrap">
+    <section class="home-grid">
+      {
+        lead ? (
+          <article class="lead">
+            <p class="kicker">
+              {copy.leadStory} · {lead.data.kicker} · {copy[lead.data.desk]}
+            </p>
+            <h1>
+              <a href={localize(lang, `/article/${storySlug(lead)}`)}>{lead.data.title}</a>
+            </h1>
+            <p class="dek">{lead.data.dek}</p>
+            <p class="meta">
+              {copy.authors} {lead.data.authors.join(', ')} · {lead.data.published.toISOString().slice(0, 10)}
+            </p>
+          </article>
+        ) : null
+      }
+      <aside class="rail">
+        <h2>{copy.latest}</h2>
+        <ul class="story-list">
+          {
+            latest.map((story) => (
+              <li>
+                <div class="kicker">{copy[story.data.desk]}</div>
+                <h3>
+                  <a href={localize(lang, `/article/${storySlug(story)}`)}>{story.data.title}</a>
+                </h3>
+              </li>
+            ))
+          }
+        </ul>
+      </aside>
+    </section>
+
+    <section class="desk-band">
+      <h2>{copy.investigations}</h2>
+      <div class="card-grid">
+        {
+          cases.map((item) => (
+            <a class="card" href={localize(lang, `/investigations/${caseSlug(item)}`)}>
+              <div class="kicker">{item.data.kicker}</div>
+              <h3>{item.data.title}</h3>
+              <p class="meta">{item.data.centralQuestion}</p>
+            </a>
+          ))
+        }
+        {
+          investigations.map((story) => (
+            <StoryCard lang={lang} story={story} />
+          ))
+        }
+      </div>
+    </section>
+
+    {
+      deskIds.map((desk) => {
+        const items = stories.filter((s) => s.data.desk === desk).slice(0, 3);
+        if (!items.length) return null;
+        return (
+          <section class="desk-band">
+            <h2>
+              <a href={localize(lang, `/${desk}`)}>{copy[desk]}</a>
+            </h2>
+            <div class="card-grid">
+              {items.map((story) => (
+                <StoryCard lang={lang} story={story} />
+              ))}
+            </div>
+          </section>
+        );
+      })
+    }
+  </div>
+</BaseLayout>

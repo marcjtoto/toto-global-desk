@@ -1,0 +1,62 @@
+---
+import { t, type Lang } from '../i18n/ui';
+
+interface Row {
+  id: string;
+  item: string;
+  source: string;
+  dateObtained: string;
+  originalDate: string;
+  reliability: 'high' | 'medium' | 'low';
+  supports: string;
+  doesNotProve: string;
+  verification: 'verified' | 'pending' | 'disputed';
+}
+
+interface Props {
+  lang: Lang;
+  rows: Row[];
+}
+
+const { lang, rows } = Astro.props;
+const copy = t(lang);
+---
+
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Item</th>
+        <th>Source</th>
+        <th>{copy.reliability.high}</th>
+        <th>{copy.supports}</th>
+        <th>{copy.doesNotProve}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {
+        rows.map((row) => (
+          <tr>
+            <td>
+              <code>{row.id}</code>
+            </td>
+            <td>{row.item}</td>
+            <td>
+              {row.source}
+              <div class="meta">
+                {row.originalDate} · {row.dateObtained}
+              </div>
+            </td>
+            <td>
+              {copy.reliability[row.reliability]}
+              <div class="meta">{row.verification}</div>
+            </td>
+            <td>{row.supports}</td>
+            <td>{row.doesNotProve}</td>
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+</div>

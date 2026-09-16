@@ -1,0 +1,26 @@
+---
+import { t, type Lang } from '../i18n/ui';
+import { localize } from '../lib/lang';
+
+interface Props {
+  lang: Lang;
+  title: string;
+  href: string;
+}
+
+const { lang, title, href } = Astro.props;
+const copy = t(lang);
+---
+
+{
+  title ? (
+    <div class="breaking-bar">
+      <div class="wrap">
+        <a href={href}>
+          <span class="breaking-kicker">{copy.breaking}</span>
+          <span>{title}</span>
+        </a>
+      </div>
+    </div>
+  ) : null
+}

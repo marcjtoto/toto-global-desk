@@ -1,0 +1,21 @@
+---
+import { t, type Lang } from '../i18n/ui';
+
+type Label =
+  | 'verified'
+  | 'strongly-supported'
+  | 'reported-unconfirmed'
+  | 'disputed'
+  | 'false-misleading'
+  | 'unknown';
+
+interface Props {
+  lang: Lang;
+  label: Label;
+}
+
+const { lang, label } = Astro.props;
+const copy = t(lang);
+---
+
+<span class={`claim claim-${label}`}>{copy.claim[label]}</span>

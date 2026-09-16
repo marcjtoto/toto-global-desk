@@ -1,0 +1,120 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import StoryCard from '../../components/StoryCard.astro';
+import { t, type Lang } from '../../i18n/ui';
+import { pages } from '../../i18n/pages';
+import { langFromParam, locales } from '../../lib/lang';
+import { storiesFor, storySlug } from '../../lib/content';
+import { localize } from '../../lib/lang';
+import { deskSections, extraSections, pageSections, staticPages } from '../../lib/sections';
+
+export function getStaticPaths() {
+  return locales.flatMap((lang) => pageSections.map((section) => ({ params: { lang, section } })));
+}
+
+const lang = langFromParam(Astro.params.lang);
+const section = Astro.params.section ?? 'latest';
+const copy = t(lang);
+const stories = await storiesFor(lang);
+
+const isDesk = (deskSections as readonly string[]).includes(section);
+const isStatic = (staticPages as readonly string[]).includes(section as (typeof staticPages)[number]);
+
+let title = section;
+let description = copy.tagline;
+let list: CollectionEntry<'stories'>[] = [];
+
+if (section === 'latest') {
+  title = copy.latest;
+  list = stories;
+} else if (section === 'breaking') {
+  title = copy.breaking;
+  list = stories.filter((s) => s.data.breaking);
+} else if (section === 'search') {
+  title = copy.search;
+  list = stories;
+} else if (isDesk) {
+  title = copy[section as keyof typeof copy] as string;
+  list = stories.filter((s) => s.data.desk === section);
+} else if (isStatic) {
+  title = pages[lang][section as keyof (typeof pages)[Lang]].title;
+  description = title;
+}
+
+const staticPage = isStatic ? pages[lang][section as keyof (typeof pages)[Lang]] : null;
+const searchIndex = list.map((s) => ({
+  title: s.data.title,
+  dek: s.data.dek,
+  href: localize(lang, `/article/${storySlug(s)}`),
+  desk: copy[s.data.desk],
+}));
+---
+
+<BaseLayout lang={lang} title={title} description={description}>
+  <div class="wrap">
+    <header class="page-title">
+      <p class="kicker">{copy.demoKicker}</p>
+      <h1>{title}</h1>
+    </header>
+
+    {
+      staticPage ? (
+        <div class="prose">
+          <Fragment set:html={staticPage.html} />
+          {section === 'contact' ? (
+            <label>
+              <span class="meta">{copy.contact}</span>
+              <textarea class="search-box" rows="6" readonly>
+DEMO: this box is not a server. It does not send, store, encrypt, or anonymize anything.
+              </textarea>
+            </label>
+          ) : null}
+        </div>
+      ) : null
+    }
+
+    {
+      section === 'search' ? (
+        <div>
+          <label>
+            <span class="meta">{copy.searchHint}</span>
+            <input class="search-box" id="q" type="search" placeholder={copy.searchPlaceholder} />
+          </label>
+          <ul class="story-list" id="results">
+            {searchIndex.map((item) => (
+              <li data-q={`${item.title} ${item.dek} ${item.desk}`}>
+                <div class="kicker">{item.desk}</div>
+                <h3>
+                  <a href={item.href}>{item.title}</a>
+                </h3>
+                <p class="meta">{item.dek}</p>
+              </li>
+            ))}
+          </ul>
+          <script is:inline>
+            const input = document.getElementById('q');
+            const items = document.querySelectorAll('#results li');
+            input?.addEventListener('input', function () {
+              const q = input.value.toLowerCase();
+              items.forEach(function (li) {
+                const hay = (li.getAttribute('data-q') || '').toLowerCase();
+                li.style.display = hay.includes(q) ? '' : 'none';
+              });
+            });
+          </script>
+        </div>
+      ) : null
+    }
+
+    {
+      !staticPage && section !== 'search' ? (
+        <div class="card-grid">
+          {list.map((story) => (
+            <StoryCard lang={lang} story={story} />
+          ))}
+        </div>
+      ) : null
+    }
+  </div>
+</BaseLayout>

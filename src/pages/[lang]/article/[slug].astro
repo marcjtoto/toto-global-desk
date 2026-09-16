@@ -1,0 +1,69 @@
+---
+import { render } from 'astro:content';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import ClaimLabel from '../../../components/ClaimLabel.astro';
+import SourceCard from '../../../components/SourceCard.astro';
+import { t } from '../../../i18n/ui';
+import { langFromParam, localize } from '../../../lib/lang';
+import { storiesFor, storySlug } from '../../../lib/content';
+
+export async function getStaticPaths() {
+  const stories = await storiesFor('en');
+  const pt = await storiesFor('pt-br');
+  return [...stories, ...pt].map((story) => ({
+    params: { lang: story.data.lang, slug: storySlug(story) },
+    props: { story },
+  }));
+}
+
+const lang = langFromParam(Astro.params.lang);
+const { story } = Astro.props;
+const copy = t(lang);
+const { Content } = await render(story);
+---
+
+<BaseLayout lang={lang} title={story.data.title} description={story.data.dek}>
+  <article class="wrap prose" data-pagefind-body>
+    <p class="kicker">
+      {story.data.kicker} · {copy[story.data.desk]}
+    </p>
+    <h1>{story.data.title}</h1>
+    <p class="dek">{story.data.dek}</p>
+    <p class="meta">
+      {copy.authors} {story.data.authors.join(', ')} · {copy.published}
+      {story.data.published.toISOString().slice(0, 10)}
+      {
+        story.data.updated ? ` · ${copy.updated} ${story.data.updated.toISOString().slice(0, 10)}` : ''
+      }
+    </p>
+    <Content />
+    {
+      story.data.claims.length ? (
+        <section>
+          <h2>{copy.claims}</h2>
+          {story.data.claims.map((claim) => (
+            <div class="claim-row">
+              <ClaimLabel lang={lang} label={claim.label} />
+              <p>
+                <code>{claim.id}</code> — {claim.text}
+              </p>
+            </div>
+          ))}
+        </section>
+      ) : null
+    }
+    {
+      story.data.sources.length ? (
+        <section>
+          <h2>{copy.sources}</h2>
+          {story.data.sources.map((source) => (
+            <SourceCard lang={lang} {...source} />
+          ))}
+        </section>
+      ) : null
+    }
+    <p>
+      <a href={localize(lang, '/')}>{copy.name}</a>
+    </p>
+  </article>
+</BaseLayout>

@@ -1,0 +1,33 @@
+---
+import { t, type Lang } from '../i18n/ui';
+
+interface Item {
+  date: string;
+  event: string;
+  evidenceId: string;
+  confidence: 'high' | 'medium' | 'low';
+  why: string;
+}
+
+interface Props {
+  lang: Lang;
+  items: Item[];
+}
+
+const { lang, items } = Astro.props;
+const copy = t(lang);
+---
+
+<ol class="story-list">
+  {
+    items.map((item) => (
+      <li class="timeline-item">
+        <div class="kicker">
+          {item.date} · {item.evidenceId} · {copy.reliability[item.confidence]}
+        </div>
+        <h3>{item.event}</h3>
+        <p class="meta">{item.why}</p>
+      </li>
+    ))
+  }
+</ol>

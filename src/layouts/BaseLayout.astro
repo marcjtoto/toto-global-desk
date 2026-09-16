@@ -1,0 +1,61 @@
+---
+import '../styles/global.css';
+import { t, type Lang } from '../i18n/ui';
+import { localize } from '../lib/lang';
+import DemoBanner from '../components/DemoBanner.astro';
+import Masthead from '../components/Masthead.astro';
+import Footer from '../components/Footer.astro';
+
+interface Props {
+  lang: Lang;
+  title: string;
+  description?: string;
+}
+
+const { lang, title, description } = Astro.props;
+const copy = t(lang);
+const pageTitle = `${title} — ${copy.name}`;
+---
+
+<!doctype html>
+<html lang={lang === 'pt-br' ? 'pt-BR' : 'en'}>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="description" content={description ?? copy.tagline} />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>{pageTitle}</title>
+    <script is:inline>
+      (function () {
+        try {
+          var stored = localStorage.getItem('tgd-theme');
+          if (stored === 'light' || stored === 'dark') {
+            document.documentElement.setAttribute('data-theme', stored);
+          }
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body>
+    <a class="skip" href="#content">{copy.skip}</a>
+    <DemoBanner lang={lang} />
+    <Masthead lang={lang} pathname={Astro.url.pathname} />
+    <main id="content">
+      <slot />
+    </main>
+    <Footer lang={lang} />
+    <script is:inline>
+      document.querySelectorAll('[data-theme-btn]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var next = btn.getAttribute('data-theme-btn');
+          document.documentElement.setAttribute('data-theme', next);
+          try {
+            localStorage.setItem('tgd-theme', next);
+          } catch (e) {}
+        });
+      });
+    </script>
+  </body>
+</html>

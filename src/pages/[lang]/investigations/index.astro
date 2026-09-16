@@ -1,0 +1,35 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { t } from '../../../i18n/ui';
+import { langFromParam, localize, staticLangPaths } from '../../../lib/lang';
+import { casesFor, caseSlug } from '../../../lib/content';
+
+export function getStaticPaths() {
+  return staticLangPaths();
+}
+
+const lang = langFromParam(Astro.params.lang);
+const copy = t(lang);
+const cases = await casesFor(lang);
+---
+
+<BaseLayout lang={lang} title={copy.investigations}>
+  <div class="wrap">
+    <header class="page-title">
+      <p class="kicker">{copy.demoKicker}</p>
+      <h1>{copy.investigations}</h1>
+      <p class="dek">{copy.tagline}</p>
+    </header>
+    <div class="card-grid">
+      {
+        cases.map((item) => (
+          <a class="card" href={localize(lang, `/investigations/${caseSlug(item)}`)}>
+            <div class="kicker">{item.data.kicker} · {item.data.publicationStatus}</div>
+            <h3>{item.data.title}</h3>
+            <p class="meta">{item.data.centralQuestion}</p>
+          </a>
+        ))
+      }
+    </div>
+  </div>
+</BaseLayout>

@@ -1,0 +1,9 @@
+---
+import { t, type Lang } from '../i18n/ui';
+
+const { lang } = Astro.props as { lang: Lang };
+---
+
+<div class="demo-banner">
+  <div class="wrap">{t(lang).demoBanner}</div>
+</div>

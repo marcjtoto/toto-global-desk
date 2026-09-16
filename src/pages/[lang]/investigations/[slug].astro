@@ -1,0 +1,91 @@
+---
+import { render } from 'astro:content';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import ClaimLabel from '../../../components/ClaimLabel.astro';
+import SourceCard from '../../../components/SourceCard.astro';
+import EvidenceLog from '../../../components/EvidenceLog.astro';
+import Timeline from '../../../components/Timeline.astro';
+import { t } from '../../../i18n/ui';
+import { langFromParam } from '../../../lib/lang';
+import { casesFor, caseSlug } from '../../../lib/content';
+
+export async function getStaticPaths() {
+  const en = await casesFor('en');
+  const pt = await casesFor('pt-br');
+  return [...en, ...pt].map((item) => ({
+    params: { lang: item.data.lang, slug: caseSlug(item) },
+    props: { item },
+  }));
+}
+
+const lang = langFromParam(Astro.params.lang);
+const { item } = Astro.props;
+const copy = t(lang);
+const { Content } = await render(item);
+---
+
+<BaseLayout lang={lang} title={item.data.title} description={item.data.centralQuestion}>
+  <article class="wrap" data-pagefind-body>
+    <header class="page-title">
+      <p class="kicker">{item.data.kicker} · {copy.investigations}</p>
+      <h1>{item.data.title}</h1>
+      <p class="dek">{item.data.dek}</p>
+      <p class="meta">
+        {copy.authors} {item.data.authors.join(', ')} · {item.data.published.toISOString().slice(0, 10)}
+      </p>
+    </header>
+    <section class="notice">
+      <p>
+        <strong>{copy.centralQuestion}:</strong> {item.data.centralQuestion}
+      </p>
+      <p>
+        <strong>{copy.jurisdiction}:</strong> {item.data.jurisdiction}
+      </p>
+      <p>
+        <strong>{copy.caseStatus}:</strong> {item.data.publicationStatus}
+      </p>
+    </section>
+    <div class="prose">
+      <Content />
+    </div>
+    <section>
+      <h2>{copy.people}</h2>
+      <p>{item.data.people.join(' · ')}</p>
+      <h2>{copy.entities}</h2>
+      <p>{item.data.entities.join(' · ')}</p>
+    </section>
+    {
+      item.data.claims.length ? (
+        <section>
+          <h2>{copy.claims}</h2>
+          {item.data.claims.map((claim) => (
+            <div class="claim-row">
+              <ClaimLabel lang={lang} label={claim.label} />
+              <p>
+                <code>{claim.id}</code> — {claim.text}
+              </p>
+            </div>
+          ))}
+        </section>
+      ) : null
+    }
+    <section>
+      <h2>{copy.evidenceLog}</h2>
+      <EvidenceLog lang={lang} rows={item.data.evidence} />
+    </section>
+    <section>
+      <h2>{copy.timeline}</h2>
+      <Timeline lang={lang} items={item.data.timeline} />
+    </section>
+    <section>
+      <h2>{copy.subjectResponse}</h2>
+      <div class="notice">
+        <p>{item.data.subjectResponse}</p>
+      </div>
+    </section>
+    <section>
+      <h2>{copy.sources}</h2>
+      {item.data.sources.map((source) => <SourceCard lang={lang} {...source} />)}
+    </section>
+  </article>
+</BaseLayout>

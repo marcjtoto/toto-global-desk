@@ -1,0 +1,32 @@
+---
+import { t, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+  title: string;
+  publisher: string;
+  url: string;
+  date: string;
+  type: 'primary' | 'secondary' | 'lead';
+}
+
+const { lang, title, publisher, url, date, type } = Astro.props;
+const copy = t(lang);
+---
+
+<article class="source-card">
+  <div class="kicker">{copy.sourceType[type]}</div>
+  <h3>{title}</h3>
+  <p class="meta">{publisher} · {date}</p>
+  {
+    url ? (
+      <p>
+        <a href={url} rel="noopener noreferrer">
+          {url}
+        </a>
+      </p>
+    ) : (
+      <p class="meta">No public URL in this DEMO record.</p>
+    )
+  }
+</article>

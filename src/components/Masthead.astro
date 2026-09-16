@@ -1,0 +1,38 @@
+---
+import { desks, t, type Lang } from '../i18n/ui';
+import { localize, switchLang } from '../lib/lang';
+
+interface Props {
+  lang: Lang;
+  pathname: string;
+}
+
+const { lang, pathname } = Astro.props;
+const copy = t(lang);
+const other = lang === 'en' ? 'pt-br' : 'en';
+---
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="masthead-top">
+      <span>{copy.mastheadDate}</span>
+      <div class="tools">
+        <a href={localize(lang, '/search')}>{copy.search}</a>
+        <a href={switchLang(lang, other, pathname)}>{other === 'en' ? 'EN' : 'PT'}</a>
+        <button type="button" data-theme-btn="light">{copy.themeLight}</button>
+        <button type="button" data-theme-btn="dark">{copy.themeDark}</button>
+      </div>
+    </div>
+    <a class="brand" href={localize(lang, '/')}>
+      <div class="brand-name">{copy.name}</div>
+      <p class="brand-tag">{copy.tagline}</p>
+    </a>
+    <nav class="nav" aria-label="Desks">
+      {
+        desks.map((desk) => (
+          <a href={localize(lang, desk.path)}>{copy[desk.id]}</a>
+        ))
+      }
+    </nav>
+  </div>
+</header>

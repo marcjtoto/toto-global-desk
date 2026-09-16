@@ -1,0 +1,29 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { t, type Lang } from '../i18n/ui';
+import { localize } from '../lib/lang';
+import ClaimLabel from './ClaimLabel.astro';
+
+interface Props {
+  lang: Lang;
+  story: CollectionEntry<'stories'>;
+}
+
+const { lang, story } = Astro.props;
+const copy = t(lang);
+const href = localize(lang, `/article/${story.id.split('/').pop()}`);
+const deskLabel = copy[story.data.desk];
+---
+
+<a class="card" href={href}>
+  <div class="kicker">{story.data.kicker} · {deskLabel}</div>
+  <h3>{story.data.title}</h3>
+  <p class="meta">{story.data.dek}</p>
+  {
+    story.data.claims[0] ? (
+      <p>
+        <ClaimLabel lang={lang} label={story.data.claims[0].label} />
+      </p>
+    ) : null
+  }
+</a>
