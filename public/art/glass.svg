@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 480" role="img">
+  <rect width="800" height="480" fill="#1b2433"/>
+  <g fill="none" stroke="#8ec3e6" stroke-width="3">
+    <path d="M40 40 L760 40 L760 440 L40 440 Z"/>
+    <path d="M120 90 L390 210 L760 40"/>
+    <path d="M40 440 L410 200 L680 440"/>
+    <path d="M200 40 L420 300 L200 440"/>
+  </g>
+  <circle cx="420" cy="210" r="54" fill="#c23b3b" opacity="0.85"/>
+  <circle cx="420" cy="210" r="22" fill="#f2d6d6"/>
+</svg>

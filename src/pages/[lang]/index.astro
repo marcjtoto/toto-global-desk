@@ -1,9 +1,8 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import BreakingBar from '../../components/BreakingBar.astro';
-import StoryCard from '../../components/StoryCard.astro';
 import { t } from '../../i18n/ui';
-import { langFromParam, localize, staticLangPaths } from '../../lib/lang';
+import { langFromParam, localize, staticLangPaths, withBase } from '../../lib/lang';
 import { casesFor, storiesFor, storySlug, caseSlug } from '../../lib/content';
 
 export function getStaticPaths() {
@@ -16,9 +15,16 @@ const stories = await storiesFor(lang);
 const cases = await casesFor(lang);
 const lead = stories.find((s) => s.data.featured) ?? stories[0];
 const breaking = stories.find((s) => s.data.breaking);
-const latest = stories.filter((s) => s.id !== lead?.id).slice(0, 6);
-const investigations = stories.filter((s) => s.data.desk === 'investigations');
-const deskIds = ['brazil', 'usa', 'world', 'corruption-watch', 'war-watch', 'data-lab', 'opinion'] as const;
+const world = stories.find((s) => s.data.translationKey === 'satellite-limits');
+const corruption = stories.find((s) => s.data.translationKey === 'not-corruption-yet');
+const live = [
+  breaking,
+  stories.find((s) => s.data.translationKey === 'open-demo-case'),
+  stories.find((s) => s.data.translationKey === 'brazil-public-records'),
+  stories.find((s) => s.data.translationKey === 'reading-foia'),
+].filter(Boolean);
+const mostRead = [lead, world, corruption].filter(Boolean);
+const caseFile = cases[0];
 ---
 
 <BaseLayout lang={lang} title={copy.tagline} description={copy.tagline}>
@@ -32,77 +38,152 @@ const deskIds = ['brazil', 'usa', 'world', 'corruption-watch', 'war-watch', 'dat
     ) : null
   }
   <div class="wrap">
-    <section class="home-grid">
+    <section class="home-board">
       {
         lead ? (
           <article class="lead">
-            <p class="kicker">
-              {copy.leadStory} · {lead.data.kicker} · {copy[lead.data.desk]}
-            </p>
+            <p class="kicker">{copy.investigations}</p>
+            <a href={localize(lang, `/article/${storySlug(lead)}`)}>
+              <img
+                class="lead-photo"
+                src={withBase('/art/lead-plaza.svg')}
+                alt={copy.originalArt}
+                width="1200"
+                height="720"
+              />
+            </a>
             <h1>
               <a href={localize(lang, `/article/${storySlug(lead)}`)}>{lead.data.title}</a>
             </h1>
             <p class="dek">{lead.data.dek}</p>
-            <p class="meta">
+            <p class="tags">
+              <span>{copy.evidence}</span>
+              <span>{lead.data.kicker}</span>
+              <span>{copy[lead.data.desk]}</span>
+            </p>
+            <p class="byline">
               {copy.authors} {lead.data.authors.join(', ')} · {lead.data.published.toISOString().slice(0, 10)}
             </p>
           </article>
         ) : null
       }
-      <aside class="rail">
-        <h2>{copy.latest}</h2>
-        <ul class="story-list">
-          {
-            latest.map((story) => (
-              <li>
-                <div class="kicker">{copy[story.data.desk]}</div>
-                <h3>
-                  <a href={localize(lang, `/article/${storySlug(story)}`)}>{story.data.title}</a>
-                </h3>
-              </li>
-            ))
-          }
-        </ul>
+
+      <div class="mid-stack">
+        {
+          world ? (
+            <article class="mid-card">
+              <a href={localize(lang, `/article/${storySlug(world)}`)}>
+                <img class="mid-photo" src={withBase('/art/glass.svg')} alt={copy.originalArt} width="800" height="480" />
+              </a>
+              <span class="chip">{copy.world}</span>
+              <h2>
+                <a href={localize(lang, `/article/${storySlug(world)}`)}>{world.data.title}</a>
+              </h2>
+              <p class="dek">{world.data.dek}</p>
+              <p class="byline">
+                {copy.authors} {world.data.authors.join(', ')} · {world.data.published.toISOString().slice(0, 10)}
+              </p>
+            </article>
+          ) : null
+        }
+        {
+          corruption ? (
+            <article class="mid-card">
+              <a href={localize(lang, `/article/${storySlug(corruption)}`)}>
+                <img class="mid-photo" src={withBase('/art/solar.svg')} alt={copy.originalArt} width="800" height="420" />
+              </a>
+              <span class="chip">{copy.environment}</span>
+              <h2>
+                <a href={localize(lang, `/article/${storySlug(corruption)}`)}>{corruption.data.title}</a>
+              </h2>
+              <p class="dek">{corruption.data.dek}</p>
+              <p class="byline">
+                {copy.authors} {corruption.data.authors.join(', ')} ·{' '}
+                {corruption.data.published.toISOString().slice(0, 10)}
+              </p>
+            </article>
+          ) : null
+        }
+      </div>
+
+      <aside>
+        <div class="live">
+          <h2>{copy.liveUpdates}</h2>
+          <ol>
+            {
+              live.map((story, i) =>
+                story ? (
+                  <li>
+                    <time datetime={story.data.published.toISOString()}>
+                      {story.data.published.toISOString().slice(5, 10)}
+                    </time>
+                    <div>
+                      <a href={localize(lang, `/article/${storySlug(story)}`)}>{story.data.title}</a>
+                      {story.data.breaking ? <div class="now">{copy.now}</div> : null}
+                    </div>
+                  </li>
+                ) : null,
+              )
+            }
+          </ol>
+          <p style="padding:0 0.8rem 0.8rem">
+            <a href={localize(lang, '/latest')}>{copy.seeAllUpdates} →</a>
+          </p>
+        </div>
+        <div class="datalab">
+          <h3>{copy['data-lab']}</h3>
+          <img src={withBase('/art/map.svg')} alt={copy.originalArt} width="400" height="220" />
+          <p class="dek">{copy.dataLabDek}</p>
+          <p>
+            <a href={localize(lang, '/data-lab')}>{copy.exploreDataLab} →</a>
+          </p>
+        </div>
       </aside>
     </section>
 
-    <section class="desk-band">
-      <h2>{copy.investigations}</h2>
-      <div class="card-grid">
-        {
-          cases.map((item) => (
-            <a class="card" href={localize(lang, `/investigations/${caseSlug(item)}`)}>
-              <div class="kicker">{item.data.kicker}</div>
-              <h3>{item.data.title}</h3>
-              <p class="meta">{item.data.centralQuestion}</p>
-            </a>
-          ))
-        }
-        {
-          investigations.map((story) => (
-            <StoryCard lang={lang} story={story} />
-          ))
-        }
+    <section class="strip">
+      <div>
+        <h3>{copy.briefing}</h3>
+        <p>{copy.briefingDek}</p>
+        {lead ? <a href={localize(lang, `/article/${storySlug(lead)}`)}>{copy.briefingCta} →</a> : null}
+      </div>
+      <div>
+        <h3>{copy.spotlight}</h3>
+        <img src={withBase('/art/confidential.svg')} alt={copy.originalArt} width="200" height="200" />
+        <p>{copy.spotlightDek}</p>
+        {caseFile ? (
+          <a href={localize(lang, `/investigations/${caseSlug(caseFile)}`)}>{copy.spotlightCta} →</a>
+        ) : null}
+      </div>
+      <div>
+        <h3>
+          {copy.brasilUsa} <span class="flags">🇺🇸🇧🇷</span>
+        </h3>
+        <p>{copy.brasilUsaDek}</p>
+        <a href={localize(lang, '/usa')}>{copy.compareCta} →</a>
+      </div>
+      <div>
+        <h3>{copy.video}</h3>
+        <a href={localize(lang, '/about')}>
+          <img src={withBase('/art/video.svg')} alt={copy.originalArt} width="640" height="360" />
+        </a>
+        <p>{copy.videoDek}</p>
+        <a href={localize(lang, '/about')}>{copy.watchCta} →</a>
+      </div>
+      <div>
+        <h3>{copy.mostRead}</h3>
+        <ol class="most-read">
+          {
+            mostRead.map((story) =>
+              story ? (
+                <li>
+                  <a href={localize(lang, `/article/${storySlug(story)}`)}>{story.data.title}</a>
+                </li>
+              ) : null,
+            )
+          }
+        </ol>
       </div>
     </section>
-
-    {
-      deskIds.map((desk) => {
-        const items = stories.filter((s) => s.data.desk === desk).slice(0, 3);
-        if (!items.length) return null;
-        return (
-          <section class="desk-band">
-            <h2>
-              <a href={localize(lang, `/${desk}`)}>{copy[desk]}</a>
-            </h2>
-            <div class="card-grid">
-              {items.map((story) => (
-                <StoryCard lang={lang} story={story} />
-              ))}
-            </div>
-          </section>
-        );
-      })
-    }
   </div>
 </BaseLayout>

@@ -14,25 +14,50 @@ const other = lang === 'en' ? 'pt-br' : 'en';
 
 <header class="masthead">
   <div class="wrap">
-    <div class="masthead-top">
-      <span>{copy.mastheadDate}</span>
-      <div class="tools">
-        <a href={localize(lang, '/search')}>{copy.search}</a>
-        <a href={switchLang(lang, other, pathname)}>{other === 'en' ? 'EN' : 'PT'}</a>
+    <div class="utility">
+      <span>{copy.utilityLeft}</span>
+      <div class="utility-right">
+        <span>{copy.utilityRight}</span>
+        <a href={switchLang(lang, other, pathname)}>{other === 'en' ? 'EN' : 'PT'} | {lang === 'en' ? 'EN' : 'PT'}</a>
+        <a href={localize(lang, '/contact')}>{copy.newsletter}</a>
+        <a href={localize(lang, '/about')} title={copy.signInNote}>{copy.signIn}</a>
+        <a href={localize(lang, '/search')} aria-label={copy.search}>⌕</a>
         <button type="button" data-theme-btn="light">{copy.themeLight}</button>
         <button type="button" data-theme-btn="dark">{copy.themeDark}</button>
       </div>
     </div>
-    <a class="brand" href={localize(lang, '/')}>
-      <div class="brand-name">{copy.name}</div>
-      <p class="brand-tag">{copy.tagline}</p>
-    </a>
-    <nav class="nav" aria-label="Desks">
-      {
-        desks.map((desk) => (
-          <a href={localize(lang, desk.path)}>{copy[desk.id]}</a>
-        ))
-      }
+    <div class="masthead-row">
+      <a class="brand" href={localize(lang, '/')}>
+        <div class="brand-name">{copy.name}</div>
+        <p class="brand-tag">{copy.wordmarkSub}</p>
+      </a>
+      <div class="weather" data-weather>
+        <span aria-hidden="true">☁</span>
+        <div>
+          <strong data-temp>—</strong>
+          <small>{copy.weatherCity}</small>
+        </div>
+      </div>
+      <p class="mission">{copy.missionBox}</p>
+    </div>
+    <nav class="nav-row" aria-label="Desks">
+      {desks.map((desk) => <a href={localize(lang, desk.path)}>{copy[desk.id]}</a>)}
+      <a class="support" href={localize(lang, '/contact')}>{copy.support}</a>
     </nav>
   </div>
 </header>
+<script is:inline>
+  (function () {
+    var el = document.querySelector('[data-temp]');
+    if (!el) return;
+    fetch('https://api.open-meteo.com/v1/forecast?latitude=-15.78&longitude=-47.93&current=temperature_2m')
+      .then(function (r) {
+        return r.json();
+      })
+      .then(function (data) {
+        var t = data && data.current && data.current.temperature_2m;
+        if (typeof t === 'number') el.textContent = Math.round(t) + '°C';
+      })
+      .catch(function () {});
+  })();
+</script>

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img">
+  <rect width="200" height="200" fill="#ece6da"/>
+  <rect x="40" y="30" width="120" height="150" fill="#f7f3ea" stroke="#1a1916" stroke-width="3"/>
+  <rect x="40" y="30" width="120" height="22" fill="#9b1b2e"/>
+  <text x="100" y="46" text-anchor="middle" font-size="11" font-family="Georgia, serif" fill="#f7f3ea">CONFIDENTIAL</text>
+  <line x1="58" y1="70" x2="142" y2="70" stroke="#cfc6b6"/>
+  <line x1="58" y1="88" x2="142" y2="88" stroke="#cfc6b6"/>
+  <line x1="58" y1="106" x2="120" y2="106" stroke="#cfc6b6"/>
+</svg>

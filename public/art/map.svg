@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 220" role="img">
+  <rect width="400" height="220" fill="#f3eee4"/>
+  <g fill="#d9d1c3">
+    <path d="M20 80 l40-10 30 20-20 30-40-8z"/>
+    <path d="M90 70 l70 8 10 40-50 20-40-18z"/>
+    <path d="M180 90 l90-20 40 30-10 40-80 10z"/>
+    <path d="M20 140 l60 10 20 30-70 10z"/>
+    <path d="M250 140 l90 6 20 28-80 16z"/>
+  </g>
+  <g fill="#c4a15a">
+    <path d="M40 90 l18-4 8 14-12 8z"/>
+    <path d="M210 100 l30-8 8 16-24 6z"/>
+    <path d="M280 150 l22 2 6 12-20 6z"/>
+  </g>
+</svg>
