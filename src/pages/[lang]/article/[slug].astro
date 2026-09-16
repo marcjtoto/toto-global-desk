@@ -20,50 +20,73 @@ const lang = langFromParam(Astro.params.lang);
 const { story } = Astro.props;
 const copy = t(lang);
 const { Content } = await render(story);
+const related = (await storiesFor(lang))
+  .filter((s) => s.id !== story.id)
+  .slice(0, 5);
 ---
 
 <BaseLayout lang={lang} title={story.data.title} description={story.data.dek}>
-  <article class="wrap prose" data-pagefind-body>
-    <p class="kicker">
-      {story.data.kicker} · {copy[story.data.desk]}
-    </p>
-    <h1>{story.data.title}</h1>
-    <p class="dek">{story.data.dek}</p>
-    <p class="meta">
-      {copy.authors} {story.data.authors.join(', ')} · {copy.published}
-      {story.data.published.toISOString().slice(0, 10)}
+  <div class="wrap story-shell">
+    <article data-pagefind-body>
+      <header class="story-header">
+        <p class="kicker">
+          {story.data.kicker} · {copy[story.data.desk]}
+        </p>
+        <h1>{story.data.title}</h1>
+        <p class="dek">{story.data.dek}</p>
+        <p class="tags">
+          <span>{copy.evidence}</span>
+          <span>{story.data.kicker}</span>
+          <span>{copy[story.data.desk]}</span>
+        </p>
+        <p class="byline">
+          {copy.authors} {story.data.authors.join(', ')} · {story.data.published.toISOString().slice(0, 10)}
+          {story.data.updated ? ` · ${copy.updated} ${story.data.updated.toISOString().slice(0, 10)}` : ''}
+        </p>
+      </header>
+      <div class="prose">
+        <Content />
+      </div>
       {
-        story.data.updated ? ` · ${copy.updated} ${story.data.updated.toISOString().slice(0, 10)}` : ''
+        story.data.claims.length ? (
+          <section>
+            <h2>{copy.claims}</h2>
+            {story.data.claims.map((claim) => (
+              <div class="claim-row">
+                <ClaimLabel lang={lang} label={claim.label} />
+                <p>
+                  <code>{claim.id}</code> — {claim.text}
+                </p>
+              </div>
+            ))}
+          </section>
+        ) : null
       }
-    </p>
-    <Content />
-    {
-      story.data.claims.length ? (
-        <section>
-          <h2>{copy.claims}</h2>
-          {story.data.claims.map((claim) => (
-            <div class="claim-row">
-              <ClaimLabel lang={lang} label={claim.label} />
-              <p>
-                <code>{claim.id}</code> — {claim.text}
-              </p>
-            </div>
-          ))}
-        </section>
-      ) : null
-    }
-    {
-      story.data.sources.length ? (
-        <section>
-          <h2>{copy.sources}</h2>
-          {story.data.sources.map((source) => (
-            <SourceCard lang={lang} {...source} />
-          ))}
-        </section>
-      ) : null
-    }
-    <p>
-      <a href={localize(lang, '/')}>{copy.name}</a>
-    </p>
-  </article>
+      {
+        story.data.sources.length ? (
+          <section>
+            <h2>{copy.sources}</h2>
+            {story.data.sources.map((source) => (
+              <SourceCard lang={lang} {...source} />
+            ))}
+          </section>
+        ) : null
+      }
+    </article>
+    <aside class="rail-box">
+      <h2>{copy.latest}</h2>
+      <ul class="index-list">
+        {
+          related.map((item) => (
+            <li>
+              <div class="kicker">{copy[item.data.desk]}</div>
+              <h3>
+                <a href={localize(lang, `/article/${storySlug(item)}`)}>{item.data.title}</a>
+              </h3>
+            </li>
+          ))
+        }
+      </ul>
+    </aside>
+  </div>
 </BaseLayout>

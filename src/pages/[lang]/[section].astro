@@ -1,7 +1,6 @@
 ---
 import type { CollectionEntry } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import StoryCard from '../../components/StoryCard.astro';
 import { t, type Lang } from '../../i18n/ui';
 import { pages } from '../../i18n/pages';
 import { langFromParam, locales } from '../../lib/lang';
@@ -109,11 +108,19 @@ DEMO: this box is not a server. It does not send, store, encrypt, or anonymize a
 
     {
       !staticPage && section !== 'search' ? (
-        <div class="card-grid">
+        <ul class="index-list">
           {list.map((story) => (
-            <StoryCard lang={lang} story={story} />
+            <li>
+              <div class="kicker">
+                {story.data.kicker} · {copy[story.data.desk]}
+              </div>
+              <h2>
+                <a href={localize(lang, `/article/${storySlug(story)}`)}>{story.data.title}</a>
+              </h2>
+              <p class="dek">{story.data.dek}</p>
+            </li>
           ))}
-        </div>
+        </ul>
       ) : null
     }
   </div>

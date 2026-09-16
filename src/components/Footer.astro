@@ -1,5 +1,5 @@
 ---
-import { t, type Lang } from '../i18n/ui';
+import { desks, t, type Lang } from '../i18n/ui';
 import { localize } from '../lib/lang';
 
 const { lang } = Astro.props as { lang: Lang };
@@ -16,7 +16,14 @@ const links = [
 <footer class="site-footer">
   <div class="wrap">
     <nav class="footer-nav">
-      {links.map(([path, label]) => <a href={localize(lang, path)}>{label}</a>)}
+      {desks.map((desk) => (
+        <a href={localize(lang, desk.path)}>{copy[desk.id]}</a>
+      ))}
+    </nav>
+    <nav class="footer-nav">
+      {links.map(([path, label]) => (
+        <a href={localize(lang, path)}>{label}</a>
+      ))}
     </nav>
     <p>{copy.footer}</p>
   </div>
