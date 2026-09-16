@@ -14,7 +14,7 @@ const copy = t(lang);
 const stories = await storiesFor(lang);
 const cases = await casesFor(lang);
 const { lead, breaking, mid, live, mostRead } = homepageSlots(stories);
-const caseFile = cases[0];
+const caseFile = cases.find((c) => c.data.status !== 'demo') ?? null;
 const midA = mid[0];
 const midB = mid[1];
 ---
@@ -134,10 +134,7 @@ const midB = mid[1];
         <div class="datalab">
           <h3>{copy['data-lab']}</h3>
           <img src={withBase('/art/map.svg')} alt={copy.originalArt} width="400" height="220" />
-          <p class="dek">{copy.dataLabDek}</p>
-          <p>
-            <a href={localize(lang, '/data-lab')}>{copy.exploreDataLab} →</a>
-          </p>
+          <p class="dek">{copy.emptyDataLab}</p>
         </div>
       </aside>
     </section>
@@ -151,10 +148,16 @@ const midB = mid[1];
       <div>
         <h3>{copy.spotlight}</h3>
         <img src={withBase('/art/confidential.svg')} alt={copy.originalArt} width="200" height="200" />
-        <p>{copy.spotlightDek}</p>
-        {caseFile ? (
-          <a href={localize(lang, `/investigations/${caseSlug(caseFile)}`)}>{copy.spotlightCta} →</a>
-        ) : null}
+        {
+          caseFile ? (
+            <>
+              <p>{copy.spotlightDek}</p>
+              <a href={localize(lang, `/investigations/${caseSlug(caseFile)}`)}>{copy.spotlightCta} →</a>
+            </>
+          ) : (
+            <p>{copy.emptySpotlight}</p>
+          )
+        }
       </div>
       <div>
         <h3>
@@ -165,11 +168,8 @@ const midB = mid[1];
       </div>
       <div>
         <h3>{copy.video}</h3>
-        <a href={localize(lang, '/about')}>
-          <img src={withBase('/art/video.svg')} alt={copy.originalArt} width="640" height="360" />
-        </a>
-        <p>{copy.videoDek}</p>
-        <a href={localize(lang, '/about')}>{copy.watchCta} →</a>
+        <img src={withBase('/art/video.svg')} alt={copy.originalArt} width="640" height="360" />
+        <p>{copy.emptyVideo}</p>
       </div>
       <div>
         <h3>{copy.mostRead}</h3>

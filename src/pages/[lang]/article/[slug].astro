@@ -5,7 +5,7 @@ import ClaimLabel from '../../../components/ClaimLabel.astro';
 import SourceCard from '../../../components/SourceCard.astro';
 import { t } from '../../../i18n/ui';
 import { langFromParam, localize } from '../../../lib/lang';
-import { storiesFor, storySlug } from '../../../lib/content';
+import { EDITION_001_KEYS, storiesFor, storySlug } from '../../../lib/content';
 
 export async function getStaticPaths() {
   const stories = await storiesFor('en');
@@ -21,7 +21,12 @@ const { story } = Astro.props;
 const copy = t(lang);
 const { Content } = await render(story);
 const related = (await storiesFor(lang))
-  .filter((s) => s.id !== story.id)
+  .filter(
+    (s) =>
+      s.id !== story.id &&
+      s.data.sample === false &&
+      (EDITION_001_KEYS as readonly string[]).includes(s.data.translationKey),
+  )
   .slice(0, 5);
 ---
 
@@ -34,14 +39,18 @@ const related = (await storiesFor(lang))
         </p>
         <h1>{story.data.title}</h1>
         <p class="dek">{story.data.dek}</p>
-        <p class="tags">
-          <span>{copy.evidence}</span>
-          <span>{story.data.kicker}</span>
-          <span>{copy[story.data.desk]}</span>
-        </p>
         <p class="byline">
-          {copy.authors} {story.data.authors.join(', ')} · {story.data.published.toISOString().slice(0, 10)}
-          {story.data.updated ? ` · ${copy.updated} ${story.data.updated.toISOString().slice(0, 10)}` : ''}
+          {copy.authors} {story.data.authors.join(', ')}
+          {' · '}
+          {copy.published} {story.data.published.toISOString().slice(0, 16).replace('T', ' ')} UTC
+          {story.data.updated
+            ? ` · ${copy.updated} ${story.data.updated.toISOString().slice(0, 16).replace('T', ' ')} UTC`
+            : ''}
+        </p>
+        <p class="tags">
+          <span>{story.data.kicker}</span>
+          {story.data.editionStatus ? <span>{story.data.editionStatus}</span> : null}
+          <span>{copy[story.data.desk]}</span>
         </p>
       </header>
       <div class="prose">
@@ -72,6 +81,24 @@ const related = (await storiesFor(lang))
           </section>
         ) : null
       }
+      <section>
+        <h2>{copy.correctionPath}</h2>
+        <p>{copy.correctionPathDek}</p>
+        <p>
+          <a href={localize(lang, '/corrections')}>{copy.corrections} →</a>
+        </p>
+        {
+          story.data.correctionLog.length ? (
+            <ul>
+              {story.data.correctionLog.map((row) => (
+                <li>
+                  <time>{row.date}</time> — {row.text}
+                </li>
+              ))}
+            </ul>
+          ) : null
+        }
+      </section>
     </article>
     <aside class="rail-box">
       <h2>{copy.latest}</h2>

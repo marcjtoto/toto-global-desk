@@ -29,14 +29,28 @@ export function artForDesk(desk: CollectionEntry<'stories'>['data']['desk']): st
   return '/art/lead-plaza.svg';
 }
 
+export const EDITION_001_KEYS = [
+  'stf-sessao-15-set-2026',
+  'pf-operacao-sonar-belem',
+  'uscis-visto-diversidade-liminar',
+  'ucrania-operacao-vivaldi',
+  'tregua-energia-ucrania-eua',
+] as const;
+
 export function homepageSlots(stories: CollectionEntry<'stories'>[]) {
-  const lead = stories.find((s) => s.data.featured) ?? stories[0];
-  const rest = stories.filter((s) => s.id !== lead?.id);
+  const sourced = stories.filter(
+    (s) => s.data.sample === false && (EDITION_001_KEYS as readonly string[]).includes(s.data.translationKey),
+  );
+  const pool = sourced.length > 0 ? sourced : stories.filter((s) => s.data.sample === false);
+  const demoFallback = pool.length > 0 ? pool : stories;
+  const board = demoFallback;
+  const lead = board.find((s) => s.data.featured) ?? board[0];
+  const rest = board.filter((s) => s.id !== lead?.id);
   return {
     lead,
-    breaking: stories.find((s) => s.data.breaking),
+    breaking: board.find((s) => s.data.breaking),
     mid: rest.slice(0, 2),
-    live: stories.slice(0, 4),
-    mostRead: [lead, ...rest].filter(Boolean).slice(0, 3),
+    live: board.slice(0, 5),
+    mostRead: [lead, ...rest].filter(Boolean).slice(0, 5),
   };
 }

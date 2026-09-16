@@ -117,6 +117,11 @@ export const ui = {
     evidence: 'Evidence',
     environment: 'Environment',
     originalArt: 'Original desk art (not a news photograph)',
+    emptySpotlight: 'No sourced case file in this edition. Harbor North remains in the investigations index, labeled DEMO.',
+    emptyVideo: 'No video in this edition.',
+    emptyDataLab: 'No new dataset in this edition. The Data Lab page is still methodology, not a live tracker.',
+    correctionPath: 'Corrections',
+    correctionPathDek: 'If this story is wrong, see the corrections page. A log also sits at the end of the article when one exists.',
   },
   'pt-br': {
     name: 'ToTo Global Desk',
@@ -216,6 +221,11 @@ export const ui = {
     evidence: 'Evidência',
     environment: 'Ambiente',
     originalArt: 'Arte original da bancada (não é fotografia de agência)',
+    emptySpotlight: 'Nenhum dossiê sourced nesta edição. Harbor North permanece no índice de investigações, rotulado DEMO.',
+    emptyVideo: 'Nenhum vídeo nesta edição.',
+    emptyDataLab: 'Nenhum conjunto de dados novo nesta edição. O Laboratório de Dados segue como página de método, não um rastreador ao vivo.',
+    correctionPath: 'Correções',
+    correctionPathDek: 'Se esta reportagem estiver errada, use a página de correções. O log da peça também aparece no fim do texto, quando houver.',
   },
 } as const;
 
