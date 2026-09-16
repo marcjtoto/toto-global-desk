@@ -637,6 +637,30 @@ td {
   }
 }
 
+@media print {
+  .demo-banner,
+  .utility,
+  .nav-row,
+  .breaking-bar,
+  .support,
+  .weather,
+  .mission,
+  .rail-box,
+  .site-footer,
+  [data-theme-btn] {
+    display: none !important;
+  }
+
+  body {
+    background: white;
+    color: black;
+  }
+
+  a {
+    color: black;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   * {
     animation: none !important;

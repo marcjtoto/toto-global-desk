@@ -15,6 +15,8 @@ interface Props {
 const { lang, title, description } = Astro.props;
 const copy = t(lang);
 const pageTitle = `${title} — ${copy.name}`;
+const desc = description ?? copy.tagline;
+const canonical = new URL(Astro.url.pathname, Astro.site ?? 'http://127.0.0.1:4321').toString();
 ---
 
 <!doctype html>
@@ -24,8 +26,15 @@ const pageTitle = `${title} — ${copy.name}`;
     <link rel="icon" type="image/svg+xml" href={withBase('/favicon.svg')} />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
-    <meta name="description" content={description ?? copy.tagline} />
+    <meta name="description" content={desc} />
     <meta name="robots" content="noindex, nofollow" />
+    <link rel="canonical" href={canonical} />
+    <meta property="og:site_name" content={copy.name} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={desc} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content={lang === 'pt-br' ? 'pt_BR' : 'en_US'} />
     <link rel="alternate" type="application/rss+xml" title="RSS" href={localize(lang, '/rss.xml')} />
     <title>{pageTitle}</title>
     <script is:inline>

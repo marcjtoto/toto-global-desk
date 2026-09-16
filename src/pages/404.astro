@@ -1,0 +1,17 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { localize } from '../lib/lang';
+---
+
+<BaseLayout lang="en" title="Not found" description="This page does not exist.">
+  <div class="wrap page-title">
+    <p class="kicker">404</p>
+    <h1>Page not found</h1>
+    <p class="dek">This URL is not in the DEMO newsroom.</p>
+    <p>
+      <a href={localize('en', '/')}>English home</a>
+      ·
+      <a href={localize('pt-br', '/')}>Início em português</a>
+    </p>
+  </div>
+</BaseLayout>
