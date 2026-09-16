@@ -22,3 +22,6 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# watchlist scanner snapshots
+editorial/state/watch-snapshots.json
