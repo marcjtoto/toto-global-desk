@@ -109,11 +109,14 @@ One short note:
 - content IDs / files
 - preview: `npm run dev` → http://127.0.0.1:4321/pt-br/
 
-## 30–60 minute automation (not armed)
+## 30–60 minute automation (ARMED — queue only)
 
-Documented only. Do **not** enable a scanner until Marc says so.
+Schedule (America/Chicago, machine local):
 
-When armed: read watchlists → diff against last ledger → new queue row if material → draft SAMPLE packet → **stop at approval queue**.
+- every 45 minutes: `editorial/scripts/scan-watchlists.py scan`
+- 07:00 / 13:00 / 19:00: `... report`
+
+Behavior: hash approved watchlist homepages. On change, add an **intake** row. Does **not** write stories, does **not** `git push`, does **not** deploy. First run stores a baseline only.
 
 ## Folders
 
