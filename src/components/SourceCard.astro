@@ -12,6 +12,9 @@ interface Props {
 
 const { lang, title, publisher, url, date, type } = Astro.props;
 const copy = t(lang);
+const href = url.startsWith('/')
+  ? `${import.meta.env.BASE_URL.replace(/\/$/, '')}${url}`
+  : url;
 ---
 
 <article class="source-card">
@@ -21,7 +24,7 @@ const copy = t(lang);
   {
     url ? (
       <p>
-        <a href={url} rel="noopener noreferrer">
+        <a href={href} rel="noopener noreferrer">
           {url}
         </a>
       </p>
