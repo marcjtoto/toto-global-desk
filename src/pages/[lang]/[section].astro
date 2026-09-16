@@ -3,9 +3,8 @@ import type { CollectionEntry } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { t, type Lang } from '../../i18n/ui';
 import { pages } from '../../i18n/pages';
-import { langFromParam, locales } from '../../lib/lang';
+import { langFromParam, locales, localize, withBase } from '../../lib/lang';
 import { storiesFor, storySlug } from '../../lib/content';
-import { localize } from '../../lib/lang';
 import { deskSections, extraSections, pageSections, staticPages } from '../../lib/sections';
 
 export function getStaticPaths() {
@@ -76,6 +75,12 @@ DEMO: this box is not a server. It does not send, store, encrypt, or anonymize a
     {
       section === 'search' ? (
         <div>
+          <link rel="stylesheet" href={withBase('/pagefind/pagefind-ui.css')} />
+          <div
+            id="pagefind"
+            data-ui={withBase('/pagefind/pagefind-ui.js')}
+            data-bundle={withBase('/pagefind/')}
+          ></div>
           <label>
             <span class="meta">{copy.searchHint}</span>
             <input class="search-box" id="q" type="search" placeholder={copy.searchPlaceholder} />
@@ -101,6 +106,23 @@ DEMO: this box is not a server. It does not send, store, encrypt, or anonymize a
                 li.style.display = hay.includes(q) ? '' : 'none';
               });
             });
+            (function () {
+              var el = document.getElementById('pagefind');
+              if (!el) return;
+              var src = el.getAttribute('data-ui');
+              var bundle = el.getAttribute('data-bundle') || '/pagefind/';
+              var s = document.createElement('script');
+              s.src = src;
+              s.onload = function () {
+                if (window.PagefindUI) {
+                  new window.PagefindUI({
+                    element: '#pagefind',
+                    bundlePath: bundle.endsWith('/') ? bundle : bundle + '/',
+                  });
+                }
+              };
+              document.body.appendChild(s);
+            })();
           </script>
         </div>
       ) : null

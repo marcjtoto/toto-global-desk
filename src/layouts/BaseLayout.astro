@@ -1,7 +1,7 @@
 ---
 import '../styles/global.css';
 import { t, type Lang } from '../i18n/ui';
-import { withBase } from '../lib/lang';
+import { localize, withBase } from '../lib/lang';
 import DemoBanner from '../components/DemoBanner.astro';
 import Masthead from '../components/Masthead.astro';
 import Footer from '../components/Footer.astro';
@@ -26,6 +26,7 @@ const pageTitle = `${title} — ${copy.name}`;
     <meta name="generator" content={Astro.generator} />
     <meta name="description" content={description ?? copy.tagline} />
     <meta name="robots" content="noindex, nofollow" />
+    <link rel="alternate" type="application/rss+xml" title="RSS" href={localize(lang, '/rss.xml')} />
     <title>{pageTitle}</title>
     <script is:inline>
       (function () {

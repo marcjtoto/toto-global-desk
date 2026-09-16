@@ -2,7 +2,7 @@
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import { t } from '../../../i18n/ui';
 import { langFromParam, localize, staticLangPaths } from '../../../lib/lang';
-import { casesFor, caseSlug } from '../../../lib/content';
+import { casesFor, caseSlug, storiesFor, storySlug } from '../../../lib/content';
 
 export function getStaticPaths() {
   return staticLangPaths();
@@ -11,6 +11,7 @@ export function getStaticPaths() {
 const lang = langFromParam(Astro.params.lang);
 const copy = t(lang);
 const cases = await casesFor(lang);
+const probes = (await storiesFor(lang)).filter((s) => s.data.desk === 'investigations');
 ---
 
 <BaseLayout lang={lang} title={copy.investigations}>
@@ -20,16 +21,33 @@ const cases = await casesFor(lang);
       <h1>{copy.investigations}</h1>
       <p class="dek">{copy.tagline}</p>
     </header>
-    <div class="card-grid">
+    <ul class="index-list">
       {
         cases.map((item) => (
-          <a class="card" href={localize(lang, `/investigations/${caseSlug(item)}`)}>
-            <div class="kicker">{item.data.kicker} · {item.data.publicationStatus}</div>
-            <h3>{item.data.title}</h3>
-            <p class="meta">{item.data.centralQuestion}</p>
-          </a>
+          <li>
+            <div class="kicker">
+              {item.data.kicker} · {item.data.publicationStatus}
+            </div>
+            <h2>
+              <a href={localize(lang, `/investigations/${caseSlug(item)}`)}>{item.data.title}</a>
+            </h2>
+            <p class="dek">{item.data.centralQuestion}</p>
+          </li>
         ))
       }
-    </div>
+      {
+        probes.map((story) => (
+          <li>
+            <div class="kicker">
+              {story.data.kicker} · {copy[story.data.desk]}
+            </div>
+            <h2>
+              <a href={localize(lang, `/article/${storySlug(story)}`)}>{story.data.title}</a>
+            </h2>
+            <p class="dek">{story.data.dek}</p>
+          </li>
+        ))
+      }
+    </ul>
   </div>
 </BaseLayout>
