@@ -1,0 +1,7 @@
+ToTo Global Desk
+Independent international news, intelligence and investigations.
+
+DEMO newsroom. Not live reporting until DEMO labels come off.
+Site: https://marcjtoto.github.io/toto-global-desk/en/
+Source: https://github.com/marcjtoto/toto-global-desk
+Languages: English, Português (Brasil)

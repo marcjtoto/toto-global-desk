@@ -10,6 +10,7 @@ export async function GET({ site }: APIContext) {
     rows.push({ loc: `${origin}${localize(lang, '/')}` });
     rows.push({ loc: `${origin}${localize(lang, '/investigations')}` });
     rows.push({ loc: `${origin}${localize(lang, '/rss.xml')}` });
+    rows.push({ loc: `${origin}${localize(lang, '/feed.json')}` });
     for (const section of pageSections) {
       rows.push({ loc: `${origin}${localize(lang, `/${section}`)}` });
     }

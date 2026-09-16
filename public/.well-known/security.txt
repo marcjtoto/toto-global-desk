@@ -1,0 +1,7 @@
+Contact: https://marcjtoto.github.io/toto-global-desk/en/contact/
+Expires: 2027-09-16T00:00:00.000Z
+Preferred-Languages: en, pt-BR
+Canonical: https://marcjtoto.github.io/toto-global-desk/.well-known/security.txt
+
+# This static DEMO site has no encrypted intake.
+# Do not send secrets to the contact page.

@@ -21,6 +21,25 @@ const origin = Astro.site ?? 'http://127.0.0.1:4321';
 const canonical = new URL(Astro.url.pathname, origin).toString();
 const hrefEn = new URL(switchLang(lang, 'en', Astro.url.pathname), origin).toString();
 const hrefPt = new URL(switchLang(lang, 'pt-br', Astro.url.pathname), origin).toString();
+const homeUrl = new URL(localize(lang, '/'), origin).toString();
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Organization',
+      name: copy.name,
+      url: homeUrl,
+      description: copy.demoBanner,
+    },
+    {
+      '@type': 'WebSite',
+      name: copy.name,
+      url: homeUrl,
+      inLanguage: lang === 'pt-br' ? 'pt-BR' : 'en',
+      description: copy.tagline,
+    },
+  ],
+};
 ---
 
 <!doctype html>
@@ -42,7 +61,10 @@ const hrefPt = new URL(switchLang(lang, 'pt-br', Astro.url.pathname), origin).to
     <link rel="alternate" hreflang="en" href={hrefEn} />
     <link rel="alternate" hreflang="pt-BR" href={hrefPt} />
     <link rel="alternate" hreflang="x-default" href={hrefEn} />
+    <meta name="theme-color" content="#f6f1e8" />
     <link rel="alternate" type="application/rss+xml" title="RSS" href={localize(lang, '/rss.xml')} />
+    <link rel="alternate" type="application/feed+json" title="JSON Feed" href={localize(lang, '/feed.json')} />
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
     <title>{pageTitle}</title>
     <script is:inline>
       (function () {
