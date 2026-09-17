@@ -3,7 +3,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import BreakingBar from '../../components/BreakingBar.astro';
 import { t } from '../../i18n/ui';
 import { langFromParam, localize, staticLangPaths, withBase } from '../../lib/lang';
-import { artForDesk, casesFor, homepageSlots, storiesFor, storySlug, caseSlug } from '../../lib/content';
+import { artForDesk, casesFor, homepageSlots, storiesFor, storyHero, storySlug, caseSlug } from '../../lib/content';
 
 export function getStaticPaths() {
   return staticLangPaths();
@@ -17,6 +17,9 @@ const { lead, breaking, mid, live, mostRead } = homepageSlots(stories);
 const caseFile = cases.find((c) => c.data.status !== 'demo') ?? null;
 const midA = mid[0];
 const midB = mid[1];
+const leadHero = lead ? storyHero(lead) : null;
+const midAHero = midA ? storyHero(midA) : null;
+const midBHero = midB ? storyHero(midB) : null;
 ---
 
 <BaseLayout lang={lang} title={copy.tagline} description={copy.tagline}>
@@ -38,12 +41,22 @@ const midB = mid[1];
             <a href={localize(lang, `/article/${storySlug(lead)}`)}>
               <img
                 class="lead-photo"
-                src={withBase('/art/lead-plaza.svg')}
-                alt={copy.originalArt}
+                src={withBase(leadHero.src)}
+                alt={leadHero.alt}
                 width="1200"
                 height="720"
               />
             </a>
+            {
+              leadHero.caption ? (
+                <p class="photo-cap">
+                  {leadHero.caption}
+                  <span class="credit">
+                    {leadHero.credit} · {leadHero.rights}
+                  </span>
+                </p>
+              ) : null
+            }
             <h1>
               <a href={localize(lang, `/article/${storySlug(lead)}`)}>{lead.data.title}</a>
             </h1>
@@ -67,12 +80,22 @@ const midB = mid[1];
               <a href={localize(lang, `/article/${storySlug(midA)}`)}>
                 <img
                   class="mid-photo"
-                  src={withBase(artForDesk(midA.data.desk))}
-                  alt={copy.originalArt}
+                  src={withBase(midAHero.src)}
+                  alt={midAHero.alt}
                   width="800"
                   height="480"
                 />
               </a>
+              {
+                midAHero.caption ? (
+                  <p class="photo-cap">
+                    {midAHero.caption}
+                    <span class="credit">
+                      {midAHero.credit} · {midAHero.rights}
+                    </span>
+                  </p>
+                ) : null
+              }
               <span class="chip">{copy[midA.data.desk]}</span>
               <h2>
                 <a href={localize(lang, `/article/${storySlug(midA)}`)}>{midA.data.title}</a>
@@ -90,12 +113,22 @@ const midB = mid[1];
               <a href={localize(lang, `/article/${storySlug(midB)}`)}>
                 <img
                   class="mid-photo"
-                  src={withBase(artForDesk(midB.data.desk))}
-                  alt={copy.originalArt}
+                  src={withBase(midBHero.src)}
+                  alt={midBHero.alt}
                   width="800"
                   height="420"
                 />
               </a>
+              {
+                midBHero.caption ? (
+                  <p class="photo-cap">
+                    {midBHero.caption}
+                    <span class="credit">
+                      {midBHero.credit} · {midBHero.rights}
+                    </span>
+                  </p>
+                ) : null
+              }
               <span class="chip">{copy[midB.data.desk]}</span>
               <h2>
                 <a href={localize(lang, `/article/${storySlug(midB)}`)}>{midB.data.title}</a>

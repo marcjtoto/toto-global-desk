@@ -281,7 +281,25 @@ main {
   display: block;
   width: 100%;
   height: auto;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+  object-position: center;
   background: var(--paper-2);
+}
+
+.photo-cap {
+  margin: 0.35rem 0 0.15rem;
+  font-size: 0.72rem;
+  line-height: 1.35;
+  color: var(--muted);
+  max-width: 42rem;
+}
+
+.photo-cap .credit {
+  display: block;
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  letter-spacing: 0.02em;
+  margin-top: 0.15rem;
 }
 
 .lead h1,

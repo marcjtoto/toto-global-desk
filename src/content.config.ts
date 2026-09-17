@@ -86,6 +86,17 @@ const stories = defineCollection({
         }),
       )
       .default([]),
+    hero: z
+      .object({
+        src: z.string(),
+        alt: z.string(),
+        caption: z.string(),
+        credit: z.string(),
+        sourceUrl: z.string().optional(),
+        rights: z.string(),
+        kind: z.enum(['photo', 'document', 'map', 'composite', 'original']).default('original'),
+      })
+      .optional(),
   }),
 });
 

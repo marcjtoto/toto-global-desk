@@ -23,6 +23,18 @@ export function caseSlug(entry: CollectionEntry<'cases'>): string {
   return entry.id.split('/').pop() ?? entry.id;
 }
 
+export function storyHero(entry: CollectionEntry<'stories'>) {
+  if (entry.data.hero) return entry.data.hero;
+  return {
+    src: artForDesk(entry.data.desk),
+    alt: 'Original desk art (not a news photograph)',
+    caption: '',
+    credit: '',
+    rights: 'Original SVG',
+    kind: 'original' as const,
+  };
+}
+
 export function artForDesk(desk: CollectionEntry<'stories'>['data']['desk']): string {
   if (desk === 'corruption-watch' || desk === 'data-lab') return '/art/solar.svg';
   if (desk === 'war-watch' || desk === 'world') return '/art/glass.svg';
